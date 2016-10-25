@@ -1,0 +1,137 @@
+﻿
+@{
+    ViewBag.Title = "Login";
+}
+<link href="~/Content/AdminLTE-2.3.6/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+<link href="~/fonts/font-awesome.min.css" rel="stylesheet" />
+<link href="~/fonts/ionicons.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-2.3.6/dist/css/AdminLTE.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-2.3.6/plugins/iCheck/square/blue.css" rel="stylesheet" />
+<body style="font-family:'Microsoft YaHei'" class="hold-transition login-page">
+    <div class="login-box">
+        <div class="login-logo">
+            <a href="../../index2.html"><b>Admin</b>LTE</a>
+        </div>
+        <!-- /.login-logo -->
+        <div class="login-box-body">
+            <p class="login-box-msg">Sign in to start your session</p>
+            <form action=@Url.Action("Index","Home") , method="post">
+                <div class="form-group has-feedback">
+                    <input type="email" class="form-control" placeholder="邮箱账号">
+                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                </div>
+                <div class="form-group has-feedback">
+                    <input type="password" class="form-control" placeholder="密码">
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                </div>
+                <div class="row">
+                    <div class="col-xs-8">
+                        <div class="checkbox icheck">
+                            <label>
+                                <input type="checkbox"> 记住我
+                            </label>
+                        </div>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-xs-4">
+                        <button id="btnLogin" onclick="login" type="submit" class="btn btn-primary btn-block btn-flat">登录</button>
+                    </div>
+                    <!-- /.col -->
+                </div>
+            </form>
+
+            <!-- /.social-auth-links -->
+            <a data-toggle="modal" data-target="#myModal" href="">忘记密码？</a><br>
+            <a class="text-center">@Html.ActionLink("注册", "Register", "Home")</a>
+        </div>
+        <!-- /.login-box-body -->
+    </div>
+    <form id="commentForm" method="get" action="">
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 style="font-family:'Microsoft YaHei'" class="modal-title" id="myModalLabel">
+                            找回密码
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="email" class="form-control" id="emailAddress" onchange="mail_test()" required
+                               placeholder="请输入邮箱">
+                        <label style="display:none" id="message"></label>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                            关闭
+                        </button>
+                        <button id="modifyBtn" type="button" class="btn btn-primary">
+                            确定
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+    </form>
+    <!-- /.login-box -->
+    <!-- jQuery 2.2.3 -->
+    <script src="~/Content/AdminLTE-2.3.6/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="~/Content/AdminLTE-2.3.6/bootstrap/js/bootstrap.min.js"></script>
+    <!-- iCheck -->
+    <script src="~/Content/AdminLTE-2.3.6/plugins/iCheck/icheck.min.js"></script>
+    <script>
+        $(function () {
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue',
+                increaseArea: '20%' // optional
+            });
+        });
+
+        function mail_test() {
+            var email = $('#emailAddress').val();//f1.mail.value;
+            $("#commentForm").validate({
+                rules: {
+                    email: {
+                        required: true,
+                        email: true
+                    }
+                },
+                messages: {
+                    email: "请输入一个正确的邮箱"
+                }
+            });
+        }
+        $("#modifyBtn").click(function () {
+            var a = $("#emailAddress").val();
+            var data = { "email": $("#emailAddress").val() };
+            $.ajax({
+                type: 'POST',
+                //url: 'RegisterUser',
+                url: '@Url.Action("GetPassword", "Home")',
+                data: data,
+                dataType: "json",
+                success: function (data) {
+                    if (data.state) {
+                        $("#message").show();//切换元素的可见状态。如果元素是可见的，切换为隐藏的；如果元素是隐藏的，切换为可见的。
+                        $("#message").html("发送成功！");
+                    }
+                    else {
+                        $("#message").show();
+                        $("#message").html("发送失败！");
+                    }
+                },
+                error: function () {
+                    $("#message").show();
+                    $("#message").html("发送失败！");
+                }
+            });
+        });
+    </script>
+
+    <script src="http://static.runoob.com/assets/jquery-validation-1.14.0/dist/jquery.validate.min.js"></script>
+    <script src="http://static.runoob.com/assets/jquery-validation-1.14.0/dist/localization/messages_zh.js"></script>
+</body>

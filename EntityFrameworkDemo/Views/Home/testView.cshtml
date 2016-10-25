@@ -1,0 +1,111 @@
+﻿
+@{
+    ViewBag.Title = "testView";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <link href="./index/bootstrap.css" rel="stylesheet" />
+</head>
+<body>
+    <ul>
+        <li><a href="#" data-toggle="modal" data-target="#myModal">反馈</a></li>
+    </ul>
+    <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-content" role="document">
+            <div class="modal-header" style="padding:15px 15px 0px 15px">
+                <button type="button" id="bx" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">反馈</h4>
+            </div>
+            <form id="defaultForm" class="" action="#" method="post" novalidate="novalidate">
+                <div class="modal-body form-group has-feedback has-error" style="padding:15px 15px 0 15px">
+                    <label class="control-label">Email地址</label>
+                    <div>
+                        <input type="text" class="form-control" name="iuser" data-bv-field="iuser" placeholder="请填写您的邮箱...">
+                    </div>
+                </div>
+                <div class="modal-body form-group has-feedback" style="padding:0px 15px">
+                    <label class="control-label">标题</label>
+                    <div>
+                        <input type="text" class="form-control" name="ititle" data-bv-field="ititle" placeholder="请填写标题...">
+                    </div>
+                </div>
+                <div class="modal-body form-group has-feedback" style="padding:0px 15px">
+                    <label class="control-label">内容</label>
+                    <div>
+                        <textarea class="form-control" rows="3" placeholder="请填写内容..." id="content1" name="icontent" data-bv-field="icontent"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" name="signup" type="submit" disabled="disabled">
+                        提交
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <SCRIPT src="./index/jquery.js"></SCRIPT>
+    <script src="./index/bootstrapValidator.js"></script>
+    <script src="./index/bootstrap.min.js"></script>
+    <!-- 输入过滤 ajax提交 和getFormData 一起用 -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#defaultForm').bootstrapValidator({
+                message: '此值无效',
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields: {
+                    ititle: {
+                        message: '标题无效',
+                        validators: {
+                            notEmpty: {
+                                message: '标题不能为空'
+                            }
+                        }
+                    },
+                    iuser: {
+                        validators: {
+                            emailAddress: {
+                                message: '邮箱格式不正确'
+                            },
+                            notEmpty: {
+                                message: '邮箱不能为空'
+                            }
+                        }
+                    }
+                }
+            }).on('success.form.bv', function (e) {
+                e.preventDefault();//防止重复提交   表单验证成功后可以执行下面方法
+                var form = $('#defaultForm');
+                //获取表单数据
+                var data = getFormData(form);
+
+                $.post("地址", data, function (data) {//后台 print_r($pxcc);
+                    console.log(data);
+                    alert("反馈成功\n感谢您的反馈，Good Luck！");
+                    $('#bx').trigger("click");
+                });
+            });
+        });
+        function getFormData(form) {
+            var data = form.serialize();
+            data = decodeURI(data);
+            var arr = data.split('&');
+            var item, key, value, newData = {};
+            for (var i = 0; i < arr.length; i++) {
+                item = arr[i].split('=');
+                key = item[0];
+                value = item[1];
+                newData[key] = value;
+            }
+            return newData;
+        }
+    </script>
+</body>
+</html>﻿
+
